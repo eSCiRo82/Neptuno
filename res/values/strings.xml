@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">VTTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    
+    <!-- Textos base -->
+    <!-- 
+    	%1 -> Nombre medida
+    	%2 -> Valor medida
+    	%3 -> Unidad medida
+     -->
+    <string name="parameter_base">%1$s = %2$s %3$s</string>
+    
+    <!-- Parámetros -->
+    <string name="wind_speed">Ws</string>
+    <string name="wind_direction">Wd</string>
+    <string name="ocean_speed">Os</string>
+    <string name="ocean_direction">Od</string>
+    <string name="wind_on_sail_force_module">Fws</string>
+    <string name="wind_on_sail_force_direction">Fwsd</string>
+    <string name="ocean_on_hull_force_module">Foh</string>
+    <string name="ocean_on_hull_force_direction">Fohd</string>
+    <string name="ocean_on_keel_force_module">Fok</string>
+    <string name="ocean_on_keel_force_direction">Fokd</string>
+    <string name="force_on_vessel_module">Fov</string>
+    <string name="force_on_vessel_direction">Fovd</string>
+    <string name="vessel_advance_speed">va</string>
+    <string name="vessel_rotation_speed">vr</string>
+    
+    <!-- Inicialización de parámetros -->
+    <string name="init_parameter">0.0</string>
+    
+    <!-- Unidades de parámetros -->
+    <string name="speed_units">[km/h]</string>
+    <string name="speed_units_ms">[m/s]</string>
+    <string name="direction_units">[rads]</string>
+    <string name="force_units">[N]</string>
+    
+    <!-- Identificadores -->
+	<string name="sail">SAIL</string>
+	<string name="vessel">VESSEL</string>
+	
+	<!-- Botones -->
+	<string name="left">LEFT</string>
+	<string name="right">RIGHT</string>
+</resources>
