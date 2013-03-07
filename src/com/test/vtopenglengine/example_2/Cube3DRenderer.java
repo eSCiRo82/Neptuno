@@ -10,13 +10,15 @@ public class Cube3DRenderer implements Renderer {
 	
 	private boolean mTranslucentBackground;
 	private float mTransY;
-	//private float mAngle;
+	private float mAngle;
 	private Cube3D mCube;
 
 	public Cube3DRenderer(boolean _useTranslucentBackground)
 	{
 		mTranslucentBackground = _useTranslucentBackground;
 		mCube = new Cube3D();
+		mTransY = 0.0f;
+		mAngle = 0.0f;
 	}
 	
 	// Se llama cada vez que el sistema refresca la imagen (varias veces por segundo)
@@ -30,7 +32,14 @@ public class Cube3DRenderer implements Renderer {
 		_gl.glMatrixMode(GL10.GL_MODELVIEW);
 		_gl.glLoadIdentity();
 		// Traslada el objeto trazando un seno en Y
-		_gl.glTranslatef(0.0f, (float) Math.sin(mTransY), -7.0f + (float) Math.cos(mTransY));
+		_gl.glTranslatef(0.0f, 0.0f /*(float) Math.sin(mTransY)*/, -7.0f /*+ (float) Math.cos(mTransY)*/);
+		// Rotamos alrededor del eje Y
+		_gl.glRotatef(mAngle, 0.0f, 1.0f, 0.0f);
+		// Rotamos alrededor del eje Z
+		_gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
+		// Estas dos líneas son equivalentes a:
+		// _gl.glRotatef(mAngle, 0.0f, 1.0f, 1.0f);
+		// 				 Angulo, ejeX, ejeY, ejeZ
 		
 		// Le dice a OpenGL que se le van a dar dos vectores: el de vértices y el de datos
 		_gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -40,6 +49,7 @@ public class Cube3DRenderer implements Renderer {
 		mCube.draw(_gl);
 		
 		mTransY += 0.05f;
+		mAngle += 0.4f;
 	}
 
 	// Se llama cuando la superficie cambia su tamaño

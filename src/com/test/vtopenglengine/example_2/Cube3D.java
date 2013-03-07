@@ -34,10 +34,10 @@ public class Cube3D {
 										 1.0f,  -1.0f, 	 1.0f,  
 										-1.0f,  -1.0f,   1.0f,
 										
-										-1.0f,   1.0f,  -1,0f,
-										 1.0f,   1.0f,  -1,0f,
-										 1.0f,  -1.0f,  -1,0f,
-										-1.0f,  -1.0f,  -1,0f,
+										-1.0f,   1.0f,  -1.0f,
+										 1.0f,   1.0f,  -1.0f,
+										 1.0f,  -1.0f,  -1.0f,
+										-1.0f,  -1.0f,  -1.0f
 									};
 		
 		byte maxColor = (byte) 0xFF;
@@ -49,10 +49,10 @@ public class Cube3D {
 							0,			     0,        0, maxColor,
 							maxColor,        0, maxColor, maxColor,
 							
-							maxColor, maxColor, 	   0, maxColor,
-							0,		  maxColor,	maxColor, maxColor,
-							0,			     0,        0, maxColor,
-							maxColor,        0, maxColor, maxColor
+							maxColor, 		 0, 	   0, maxColor,
+							0,		  maxColor,		   0, maxColor,
+							0,			     0, maxColor, maxColor,
+							0,       		 0,        0, maxColor
 						};
 		
 		// 0 *---* 1
@@ -91,11 +91,11 @@ public class Cube3D {
 		mColorBuffer.put(colors);
 		mColorBuffer.position(0);
 		
+		// Buffer de índices
 		mTfan1 = ByteBuffer.allocateDirect(tfan1.length);
 		mTfan1.put(tfan1);
 		mTfan1.position(0);
 		
-		// Buffer de índices
 		mTfan2 = ByteBuffer.allocateDirect(tfan2.length);
 		mTfan2.put(tfan2);
 		mTfan2.position(0);
