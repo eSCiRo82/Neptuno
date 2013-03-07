@@ -2,6 +2,7 @@ package com.test.vtopenglengine;
 
 import com.test.vtopenglengine.R;
 import com.test.vtopenglengine.example_1.Square3DRenderer;
+import com.test.vtopenglengine.example_2.Cube3DRenderer;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -17,7 +18,8 @@ public class VTOpenGLEngineActivity extends Activity {
 		//setContentView(R.layout.activity_vtopen_glengine);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		GLSurfaceView view = new GLSurfaceView(this);
-		view.setRenderer(new Square3DRenderer(true));
+		//view.setRenderer(new Square3DRenderer(true));
+		view.setRenderer(new Cube3DRenderer(true));
 		setContentView(view);
 	}
 
