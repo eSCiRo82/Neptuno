@@ -31,15 +31,20 @@ public class Cube3DRenderer implements Renderer {
 		
 		_gl.glMatrixMode(GL10.GL_MODELVIEW);
 		_gl.glLoadIdentity();
+		// El orden de aplicación de las transformaciones sigue la norma "de la última a la primera"
+		// Todas las transformaciones se hacen entorno al origen
+		// Para realizar una buena transformación el orden más normal sería: escalar, rotar y trasladar
+		// es decir, el orden de los comandos sería : glTranslatef, glRotatef, glScalef
 		// Traslada el objeto trazando un seno en Y
-		_gl.glTranslatef(0.0f, 0.0f /*(float) Math.sin(mTransY)*/, -7.0f /*+ (float) Math.cos(mTransY)*/);
+		_gl.glTranslatef(0.0f, (float) Math.sin(mTransY), -7.0f /*+ (float) Math.cos(mTransY)*/);
 		// Rotamos alrededor del eje Y
 		_gl.glRotatef(mAngle, 0.0f, 1.0f, 0.0f);
 		// Rotamos alrededor del eje Z
-		_gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);
+		_gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);		
 		// Estas dos líneas son equivalentes a:
 		// _gl.glRotatef(mAngle, 0.0f, 1.0f, 1.0f);
-		// 				 Angulo, ejeX, ejeY, ejeZ
+		// 				 Ángulo, ejeX, ejeY, ejeZ
+		// siempre y cuando se gire el mismo ángulo en todos los planos
 		
 		// Le dice a OpenGL que se le van a dar dos vectores: el de vértices y el de datos
 		_gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -62,12 +67,13 @@ public class Cube3DRenderer implements Renderer {
 		float zNear = 0.1f;
 		float zFar  = 1000;
 		// FOV de 30º pasado a radianes (57.3 ~= 180/PI)
-		float fieldOfView = 30.0f/57.3f;
+		float fieldOfView = 60.0f/57.3f;
 		float size;
 		
 		_gl.glEnable(GL10.GL_NORMALIZE);
 		
 		ratio = (float)_width/(float)_height;
+		
 		// En este modo es el que permite proyectar una escena 3D a la pantalla en 2D
 		_gl.glMatrixMode(GL10.GL_PROJECTION);
 		
@@ -75,7 +81,7 @@ public class Cube3DRenderer implements Renderer {
 		// centro de la pantalla, nos moveremos de -size a +size.
 		// Por eso el campo de visión se divide entre dos, para un campo de visión
 		// de G grados, nos moveremos en -G/2 a +G/2.
-		// Al multiplicarlo por zNear 
+		// Al multiplicarlo por zNear estamos estableciendo una escala
 		size = zNear * (float) (Math.tan((double) (fieldOfView/2.0f)));
 		
 		// Establecemos los límites y dividimos bottom y top por ratio para que el 

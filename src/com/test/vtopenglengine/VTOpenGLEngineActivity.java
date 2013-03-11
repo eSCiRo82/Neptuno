@@ -3,6 +3,7 @@ package com.test.vtopenglengine;
 import com.test.vtopenglengine.R;
 import com.test.vtopenglengine.example_1.Square3DRenderer;
 import com.test.vtopenglengine.example_2.Cube3DRenderer;
+import com.test.vtopenglengine.solar_system.SolarSystemRenderer;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -16,10 +17,17 @@ public class VTOpenGLEngineActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_vtopen_glengine);
+		int op = 2;
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		GLSurfaceView view = new GLSurfaceView(this);
-		//view.setRenderer(new Square3DRenderer(true));
-		view.setRenderer(new Cube3DRenderer(true));
+		//view.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		switch(op) 
+		{
+			case 0: view.setRenderer(new Square3DRenderer(true)); break;
+			case 1: view.setRenderer(new Cube3DRenderer(true)); break;
+			case 2: view.setRenderer(new SolarSystemRenderer()); break;
+		}
+		
 		setContentView(view);
 	}
 
