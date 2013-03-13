@@ -1,0 +1,84 @@
+package com.test.vtopenglengine.obj_file_parser;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+
+import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+
+import android.content.Context;
+
+public class BoatHullModel {
+	private ObjParser parser;
+	
+	private FloatBuffer mFVertexBuffer;
+	private FloatBuffer mFNormalBuffer;
+	private ByteBuffer mIndices;
+
+	private ByteBuffer mColorBuffer;
+	
+	public BoatHullModel(Context _context)
+	{
+		parser = new ObjParser(_context, "casco_t.obj");
+		ByteBuffer vbb = ByteBuffer.allocateDirect(parser.getVertices().length * Float.SIZE / 8);
+		vbb.order(ByteOrder.nativeOrder());
+		
+		// Creamos los buffers de cada uno de los elementos
+		// Buffer de vértices
+		
+		mFVertexBuffer = vbb.asFloatBuffer();
+		mFVertexBuffer.put(parser.getVertices());
+		mFVertexBuffer.position(0);
+		
+		ByteBuffer nbb = ByteBuffer.allocateDirect(parser.getNormals().length * Float.SIZE / 8);
+		nbb.order(ByteOrder.nativeOrder());
+		
+		mFNormalBuffer = nbb.asFloatBuffer();
+		mFNormalBuffer.put(parser.getNormals());
+		mFNormalBuffer.position(0);
+		
+		byte colors[] = new byte[parser.getNumVertices() * 4];
+				
+		for (int i = 0; i < colors.length; i++) {
+			colors[i] = (byte) 0xFF;
+		}
+		
+		mColorBuffer = ByteBuffer.allocateDirect(colors.length);
+		mColorBuffer.put(colors);
+		mColorBuffer.position(0);
+		
+		ByteBuffer buffer = ByteBuffer.allocate(parser.getFaceV().length /** Short.SIZE / 8*/);
+		buffer.order(ByteOrder.nativeOrder());
+		
+		byte[] aux = new byte[parser.getFaceV().length];
+		for (int i = 0; i < aux.length; i++)
+		{
+			aux[i] = (byte) parser.getFaceV()[i];
+		}
+		mIndices = ByteBuffer.allocate(parser.getFaceV().length /** Short.SIZE / 8*/);
+		mIndices.put(aux);
+		mIndices.position(0);
+		//mIndices.flip();
+		
+	}
+	
+	public void draw(GL10 gl)
+	{
+		gl.glFrontFace(GL10.GL_CCW);
+        //gl.glShadeModel(GL10.GL_FLAT);
+        
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mFVertexBuffer);
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, mColorBuffer);
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, mFNormalBuffer);
+		//gl.glDrawArrays(GL10.GL_TRIANGLES, 0, parser.getNumVertices());
+						// modo				  numero de indices         tipo de los datos   indices
+		gl.glDrawElements(GL10.GL_TRIANGLES, parser.getFaceV().length, GL10.GL_UNSIGNED_BYTE, mIndices);
+		//gl.glDrawElements(GL10.GL_TRIANGLE_FAN, 6 * 3, GL10.GL_UNSIGNED_BYTE, mTfan2);
+	}
+}
