@@ -35,7 +35,7 @@ public class SolarSystemRenderer implements Renderer {
 
 	public SolarSystemRenderer() {
 		mMercury = new Planet(20, 20, 0.056f, 1.0f);
-		mMercury.setPosition(0.0f, 0.0f, -1.93f);
+		mMercury.setPosition(0.0f, 0.0f, -3.1f);
 		
 		mVenus = new Planet(20, 20, 0.136f, 1.0f);
 		mVenus.setPosition(0.0f, 0.0f, -3.62f);
