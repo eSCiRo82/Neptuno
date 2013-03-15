@@ -4,11 +4,27 @@
     android:layout_height="match_parent"
     tools:context=".VTComponentViewsMainActivity" >
 
-    <TextView
+    <!--
+         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/hello_world" />
+    -->
+
+    <com.test.vtcomponentviews.vt_resistance_view.VTResistanceView
+        android:id="@+id/vTResistanceView1"
+        android:layout_width="60dip"
+        android:layout_height="60dip"
+        android:layout_centerHorizontal="true"
+        />
+
+    <com.test.vtcomponentviews.vt_timebased_button.VTTimeBasedButton
+        android:layout_width="60dip"
+        android:layout_height="60dip"
+        android:layout_alignLeft="@+id/vTResistanceView1"
+        android:layout_below="@+id/vTResistanceView1"
+        android:layout_marginTop="46dp" />
 
 </RelativeLayout>
