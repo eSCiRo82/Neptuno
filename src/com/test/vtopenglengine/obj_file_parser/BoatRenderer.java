@@ -1,5 +1,9 @@
 package com.test.vtopenglengine.obj_file_parser;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -11,6 +15,10 @@ public class BoatRenderer implements Renderer{
 	private float mTransY;
 	private float mAngle;
 	private BoatHullModel mHull;
+	private float[] color = {1.0f, 1.0f, 0.0f, 1.0f};
+	private float[] black = {0.0f, 0.0f, 0.0f, 0.0f};
+	private float[] sunPos = {100.0f, 100.0f, 100.0f, 1.0f};
+	
 
 	public BoatRenderer(Context _context, boolean _useTranslucentBackground)
 	{
@@ -35,9 +43,10 @@ public class BoatRenderer implements Renderer{
 		// Para realizar una buena transformación el orden más normal sería: escalar, rotar y trasladar
 		// es decir, el orden de los comandos sería : glTranslatef, glRotatef, glScalef
 		// Traslada el objeto trazando un seno en Y
-		_gl.glTranslatef(0.0f, 0.0f, -100.0f /*+ (float) Math.cos(mTransY)*/);
+		_gl.glTranslatef(0.0f, 0.0f, -150.0f /*+ (float) Math.cos(mTransY)*/);
 		// Rotamos alrededor del eje Y
-		_gl.glRotatef(mAngle, 0.0f, 1.0f, 0.0f);
+		_gl.glRotatef(75.0f, 1.0f, 0.0f, 0.0f);
+		_gl.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
 		// Rotamos alrededor del eje Z
 		//_gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);		
 		// Estas dos líneas son equivalentes a:
@@ -49,11 +58,19 @@ public class BoatRenderer implements Renderer{
 		_gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		_gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		
-		// Llamamos a la rutina de dibujo del cuadrado
-		mHull.draw(_gl);
+		//_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, makeFloatBuffer(color));
+		//_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, makeFloatBuffer(black));
 		
+		// Llamamos a la rutina de dibujo del cuadrado
+		_gl.glPushMatrix();
+		mHull.draw(_gl);
+		_gl.glPopMatrix();
+		
+		_gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, makeFloatBuffer(sunPos));
+		_gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, makeFloatBuffer(color));
+				
 		mTransY += 0.05f;
-		mAngle += 0.4f;
+		//mAngle += 0.4f;
 	}
 
 	// Se llama cuando la superficie cambia su tamaño
@@ -119,5 +136,19 @@ public class BoatRenderer implements Renderer{
 		_gl.glShadeModel(GL10.GL_SMOOTH);
 		// Habilita el z-buffering
 		_gl.glEnable(GL10.GL_DEPTH_TEST);
+		_gl.glEnable(GL10.GL_LIGHTING);
+		// Le indicamos a OpenGL la luz que debe habilitar (hasta 8 distintas en OpenGL ES para Android)
+		_gl.glEnable(GL10.GL_LIGHT0);
+		//initLighting(_gl);
 	}
+	
+	// Función auxiliar para convertir los arrays en bufferes que entienda OpenGL
+		public static FloatBuffer makeFloatBuffer(float[] _arr) {
+			ByteBuffer bb = ByteBuffer.allocateDirect(_arr.length * 4);
+			bb.order(ByteOrder.nativeOrder());
+			FloatBuffer fb = bb.asFloatBuffer();
+			fb.put(_arr);
+			fb.position(0);
+			return fb;
+		}
 }
