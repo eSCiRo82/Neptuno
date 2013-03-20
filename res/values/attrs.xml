@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VTTimeBasedButtonAttrs">
+        <attr name="enabled_color" format="integer"/>
+        <attr name="disabled_color" format="integer"/>
+        <attr name="line_color" format="integer"/>
+		<attr name="enabled_bitmap" format="string"/>
+		<attr name="disabled_bitmap" format="string"/>
+    </declare-styleable>
+</resources>

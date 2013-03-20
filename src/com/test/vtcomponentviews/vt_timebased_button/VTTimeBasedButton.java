@@ -1,21 +1,19 @@
 package com.test.vtcomponentviews.vt_timebased_button;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 
 public class VTTimeBasedButton extends ImageView {
 	// Colores, para probar antes de tener imágenes
-	private static final int DISABLE_COLOR = 0xFF555555;
-	private static final int ENABLE_COLOR = 0xFFFF0000;
+	private static final int DISABLED_COLOR = 0xFF555555;
+	private static final int ENABLED_COLOR = 0xFFFF0000;
 	private static final int LINE_COLOR = 0xFFFFFF00;
 	// Tamaño stándar de la vista
 	public static final float MIN_SIZE = 53;
@@ -25,8 +23,12 @@ public class VTTimeBasedButton extends ImageView {
 	private long remaining_time; // Tiempo restante
 	
 	// Recursos BITMAPS
-	private int enabled_bitmap_res;	// Imagen para cuando el botón está habilitado 
-	private int disabled_bitmap_res;	// Imagen para cuando el botón está deshabilitado
+	private Bitmap enabled_bitmap_res;	// Imagen para cuando el botón está habilitado 
+	private Bitmap disabled_bitmap_res;	// Imagen para cuando el botón está deshabilitado
+	// Recursos de color
+	private int disabled_color_res;	// Colores del botón cuando no se ha definido un bitmap
+	private int enabled_color_res;
+	private int line_color_res;	// La línea sí será un color
 	
 	private boolean reloading;	// Indica que estamos en tiempo de espera o de recarga
 	private VTTimedBasedButtonListener listener;	// Escucha para realizar la acción del botón
@@ -38,7 +40,7 @@ public class VTTimeBasedButton extends ImageView {
 	// Variables de dibujo
 	private RectF button_oval, time_oval;
 	private Paint paint;
-	private float start_angle, end_angle;
+	private float end_angle;
 	private float SIZE;
 	
 	
@@ -89,6 +91,13 @@ public class VTTimeBasedButton extends ImageView {
 		LINE_WIDTH = 2;
 		
 		timer = new TimerThread();
+		
+		enabled_bitmap_res = null;
+		disabled_bitmap_res = null;
+		
+		disabled_color_res = DISABLED_COLOR;
+		enabled_color_res = ENABLED_COLOR;
+		line_color_res = LINE_COLOR;
 	}
 
 	@Override
@@ -125,6 +134,7 @@ public class VTTimeBasedButton extends ImageView {
 		return false;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// En wrap_content establecemos un tamaño mínimo
@@ -178,40 +188,70 @@ public class VTTimeBasedButton extends ImageView {
 			// Si no se está en tiempo de espera, se pinta el botón activo
 			if (!reloading)
 			{
-				paint.setColor(ENABLE_COLOR);
-				paint.setStyle(Paint.Style.FILL);			
-				canvas.drawArc(button_oval, 0, 360.0f, false, paint);
+				if (enabled_bitmap_res == null) {
+					paint.setColor(enabled_color_res);
+					paint.setStyle(Paint.Style.FILL);			
+					canvas.drawArc(button_oval, 0, 360.0f, false, paint);
+				} else {
+					canvas.drawBitmap(enabled_bitmap_res, button_oval.left, button_oval.top, paint);
+				}
 			}
 			// Si estamos en tiempo de espera
 			else
 			{
 				// Primero dibujamos el botón inactivo
-				paint.setColor(DISABLE_COLOR);
-				paint.setStyle(Paint.Style.FILL);			
-				canvas.drawArc(button_oval, 0, 360.0f, false, paint);
-				// Después dibujamos el tiempo que queda
-				paint.setColor(LINE_COLOR);
+				if (disabled_bitmap_res == null) 
+				{
+					paint.setColor(disabled_color_res);
+					paint.setStyle(Paint.Style.FILL);			
+					canvas.drawArc(button_oval, 0, 360.0f, false, paint);
+				} else {
+					canvas.drawBitmap(disabled_bitmap_res, button_oval.left, button_oval.top, paint);
+				}
+				// Después dibujamos el tiempo que queda				
+				paint.setColor(line_color_res);
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setStrokeWidth(LINE_WIDTH);				
-				start_angle = 360.0f*(1-(float) remaining_time/(float) disabled_time);				
-				canvas.drawArc(time_oval, 0, start_angle, false, paint);
+				end_angle = 360.0f*(1-(float) remaining_time/(float) disabled_time);				
+				canvas.drawArc(time_oval, 0, end_angle, false, paint);
 				this.invalidate();
 			}
 		//}		
 	}
 	
+	// SETTERS
 	public void setDisabledTime(long _dt)
 	{
 		disabled_time = _dt;
 	}
 	
-	public void setEnabledBitmap(int _ebres)
+	public void setEnabledBitmap(Bitmap _ebres)
 	{
 		enabled_bitmap_res = _ebres;
 	}
 	
-	public void setDisabledBitmap(int _dbres)
+	public void setDisabledBitmap(Bitmap _dbres)
 	{
 		disabled_bitmap_res = _dbres;
-	}	
+	}
+	
+	public void setEnabledColor(int _color)
+	{
+		enabled_color_res = _color;
+	}
+	
+	public void setDisabledColor(int _color)
+	{
+		disabled_color_res = _color;
+	}
+	
+	public void setLineColor(int _color)
+	{
+		line_color_res = _color;
+	}
+	
+	public void setVTTimedBasedButtonListener(VTTimedBasedButtonListener _listener)
+	{
+		listener = _listener;
+	}
 }
