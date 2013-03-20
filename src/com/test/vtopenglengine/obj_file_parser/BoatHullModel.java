@@ -19,6 +19,8 @@ public class BoatHullModel {
 	private ByteBuffer mIndices;
 
 	private ByteBuffer mColorBuffer;
+	private float mAngleY = 0.0f;
+	private float mAngleX = 0.0f;
 	
 	public BoatHullModel(Context _context)
 	{
@@ -65,20 +67,26 @@ public class BoatHullModel {
 		
 	}
 	
-	public void draw(GL10 gl)
+	public void draw(GL10 _gl)
 	{
-		gl.glFrontFace(GL10.GL_CCW);
+		_gl.glFrontFace(GL10.GL_CCW);
+		//_gl.glTranslatef(0.0f, 0.0f, -150.0f /*+ (float) Math.cos(mTransY)*/);
+		// Rotamos alrededor del eje Y
+		_gl.glRotatef(mAngleX, 1.0f, 0.0f, 0.0f);
+		_gl.glRotatef(mAngleY, 0.0f, 1.0f, 0.0f);
         //gl.glShadeModel(GL10.GL_FLAT);
         
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mFVertexBuffer);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, mColorBuffer);
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glNormalPointer(GL10.GL_FLOAT, 0, mFNormalBuffer);
+		_gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		_gl.glVertexPointer(3, GL10.GL_FLOAT, 0, mFVertexBuffer);
+		_gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		_gl.glColorPointer(4, GL10.GL_UNSIGNED_BYTE, 0, mColorBuffer);
+		_gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+		_gl.glNormalPointer(GL10.GL_FLOAT, 0, mFNormalBuffer);
 		//gl.glDrawArrays(GL10.GL_TRIANGLES, 0, parser.getNumVertices());
 						// modo				  numero de indices         tipo de los datos   indices
-		gl.glDrawElements(GL10.GL_TRIANGLES, parser.getFaceV().length, GL10.GL_UNSIGNED_BYTE, mIndices);
+		_gl.glDrawElements(GL10.GL_TRIANGLES, parser.getFaceV().length, GL10.GL_UNSIGNED_BYTE, mIndices);
 		//gl.glDrawElements(GL10.GL_TRIANGLE_FAN, 6 * 3, GL10.GL_UNSIGNED_BYTE, mTfan2);
+		mAngleX += 0.02f;
+		mAngleY += 0.04f;
 	}
 }

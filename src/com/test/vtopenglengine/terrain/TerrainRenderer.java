@@ -1,4 +1,4 @@
-package com.test.vtopenglengine.obj_file_parser;
+package com.test.vtopenglengine.terrain;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -7,24 +7,27 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.test.vtopenglengine.obj_file_parser.BoatHullModel;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView.Renderer;
 
-public class BoatRenderer implements Renderer {
+public class TerrainRenderer implements Renderer {
+
 	private boolean mTranslucentBackground;
 	private float mTransY;
 	private float mAngle;
-	private BoatHullModel mHull;
+	private TerrainModel mTerrain;
 	private float[] color = {1.0f, 1.0f, 0.0f, 1.0f};
 	private float[] ambient = {1.0f, 1.0f, 1.0f, 1.0f};
 	private float[] black = {0.0f, 0.0f, 0.0f, 0.0f};
 	private float[] sunPos = {100.0f, 100.0f, 100.0f, 1.0f};
 	
 
-	public BoatRenderer(Context _context, boolean _useTranslucentBackground)
+	public TerrainRenderer(Context _context, boolean _useTranslucentBackground)
 	{
 		mTranslucentBackground = _useTranslucentBackground;
-		mHull = new BoatHullModel(_context);
+		mTerrain = new TerrainModel();
 		mTransY = 0.0f;
 		mAngle = 0.0f;
 	}
@@ -39,45 +42,9 @@ public class BoatRenderer implements Renderer {
 		
 		_gl.glMatrixMode(GL10.GL_MODELVIEW);
 		_gl.glLoadIdentity();
-		_gl.glPushMatrix();	// Las matrices se van guardando en forma de pila
-		// El orden de aplicación de las transformaciones sigue la norma "de la última a la primera"
-		// Todas las transformaciones se hacen entorno al origen
-		// Para realizar una buena transformación el orden más normal sería: escalar, rotar y trasladar
-		// es decir, el orden de los comandos sería : glTranslatef, glRotatef, glScalef
-		// Traslada el objeto trazando un seno en Y
-		_gl.glTranslatef(0.0f, 0.0f, -150.0f /*+ (float) Math.cos(mTransY)*/);
-		// Rotamos alrededor del eje Y
-		//_gl.glRotatef(75.0f, 1.0f, 0.0f, 0.0f);
-		//_gl.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
-		// Rotamos alrededor del eje Z
-		//_gl.glRotatef(mAngle, 0.0f, 0.0f, 1.0f);		
-		// Estas dos líneas son equivalentes a:
-		// _gl.glRotatef(mAngle, 0.0f, 1.0f, 1.0f);
-		// 				 Ángulo, ejeX, ejeY, ejeZ
-		// siempre y cuando se gire el mismo ángulo en todos los planos
-		
-		_gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, makeFloatBuffer(sunPos));
-		_gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, makeFloatBuffer(color));
-		_gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, makeFloatBuffer(ambient));
-		
-				
-		// Le dice a OpenGL que se le van a dar dos vectores: el de vértices y el de datos
-		_gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		_gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		
-		//_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, makeFloatBuffer(color));
-		//_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, makeFloatBuffer(black));
-		
-		// Llamamos a la rutina de dibujo del cuadrado
-		_gl.glPushMatrix();
-		_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, makeFloatBuffer(color));
-		_gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, 0.5f);
-		mHull.draw(_gl);
+		_gl.glPushMatrix();_gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, makeFloatBuffer(ambient));
+		mTerrain.draw(_gl);
 		_gl.glPopMatrix();
-		
-		_gl.glPopMatrix();
-		mTransY += 0.05f;
-		//mAngle += 0.4f;
 	}
 
 	// Se llama cuando la superficie cambia su tamaño
@@ -143,10 +110,6 @@ public class BoatRenderer implements Renderer {
 		_gl.glShadeModel(GL10.GL_SMOOTH);
 		// Habilita el z-buffering
 		_gl.glEnable(GL10.GL_DEPTH_TEST);
-		_gl.glEnable(GL10.GL_LIGHTING);
-		// Le indicamos a OpenGL la luz que debe habilitar (hasta 8 distintas en OpenGL ES para Android)
-		_gl.glEnable(GL10.GL_LIGHT0);
-		//initLighting(_gl);
 	}
 	
 	// Función auxiliar para convertir los arrays en bufferes que entienda OpenGL
